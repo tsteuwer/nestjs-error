@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional, PartialType, PickType } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsDefined, IsEnum, IsOptional, IsString } from "class-validator";
+import { IsDefined, IsEnum, IsOptional, IsString, ValidateNested } from "class-validator";
 
 export enum EntityType {
     CART = 'cart',
@@ -34,10 +34,11 @@ export class CreateCartAttributes extends PickType(CartAttributes, ['device'] as
 export class CreateCartMetaData extends PartialType(PickType(CartMetaData, ['sessionId'] as const)) {}
 export class CreateCartData extends PickType(CartDto, ['type'] as const) {
 	@ApiProperty({
+        required: true,
 		description: 'Required attributes',
 	})
     @Type(() => CreateCartAttributes)
-    @IsDefined()
+    @ValidateNested()
 	attributes: CreateCartAttributes;
 }
 export class CreateCartDto {
@@ -46,12 +47,12 @@ export class CreateCartDto {
 		description: 'The data required to create a cart',
 	})
     @Type(() => CreateCartData)
-    @IsDefined()
+    @ValidateNested()
 	data: CreateCartData;
 
 	@ApiPropertyOptional({
 		description: 'Optional meta data',
 	})
-    @Type(() => CreateCartData)
+    @Type(() => CartMetaData)
 	meta?: CartMetaData;
 }
