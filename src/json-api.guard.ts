@@ -1,5 +1,4 @@
 import { BadRequestException, CanActivate, ExecutionContext, Injectable, NotAcceptableException, UnsupportedMediaTypeException } from '@nestjs/common';
-import { validString } from 'accesso-model-lib';
 import { Observable } from 'rxjs';
 
 export const JsonApiAcceptHeader = 'application/vnd.api+json';
@@ -15,7 +14,7 @@ export class AcceptJsonApiGuard implements CanActivate {
 		const accept: string[] = (headers.accept ?? '')
 			.split(';')
 			.map((str) => str.trim())
-			.filter(validString);
+			.filter((str) => typeof str === 'string' && str.length);
 
 		// If we dont have any, bail
 		if (!accept.length) {
